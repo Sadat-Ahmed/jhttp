@@ -3,44 +3,73 @@ pipeline:
   name: Build jhttp
   orgIdentifier: default
   projectIdentifier: default_project
-  properties:
-    ci:
-      codebase:
-        build: <+input>
-        connectorRef: account.Github
-        repoName: Sadat-Ahmed/jhttp
   stages:
     - stage:
-        identifier: build
-        name: build
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
         spec:
+          cloneCodebase: true
           caching:
             enabled: true
-          cloneCodebase: true
+            override: true
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec:
+              imageSpec:
+                imageName: ubuntu-latest
           execution:
             steps:
               - step:
-                  identifier: echo
-                  name: echo
-                  spec:
-                    command: echo hello world
-                  timeout: ""
                   type: Run
-              - step:
-                  identifier: dockerbuild
-                  name: docker_build
+                  name: Run_1
+                  identifier: Run_1
                   spec:
-                    caching: true
-                    connectorRef: <+input>
-                    repo: hello/world
-                    tags:
-                      - latest
-                  timeout: ""
+                    shell: Sh
+                    command: |-
+                      - step:
+                          type: Run
+                          name: Build Java App
+                          identifier: Build_Java_App
+                          spec:
+                            connectorRef: dockerhub_connector
+                            image: maven:3.8-jdk-11
+                            shell: Sh
+                            command: |-
+                              mvn clean package dependency:copy-dependencies
+
+                      - step:
+                          type: Run
+                          name: Run Unit Tests
+                          identifier: Run_Unit_Tests
+                          spec:
+                            connectorRef: dockerhub_connector
+                            image: maven:3.8-jdk-11
+                            shell: Sh
+                            command: |-
+                              mvn test
+                            reports:
+                              type: JUnit
+                              spec:
+                                paths:
+                                  - target/surefire-reports/*.xml
+              - step:
                   type: BuildAndPushDockerRegistry
-          platform:
-            arch: Amd64
-            os: Linux
-          runtime:
-            spec: {}
-            type: Cloud
-        type: CI
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerhub_connector
+                    repo: sadatahmed93/jhttp
+                    tags:
+                      - <+pipeline.sequenceId>
+  properties:
+    ci:
+      codebase:
+        connectorRef: github_connector
+        build: <+input>
