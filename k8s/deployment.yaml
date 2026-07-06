@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: jhttp
-          image: sadatahmed93/jhttp:latest
+          image: sadatahmed93/jhttp:11
           ports:
             - containerPort: 8888
