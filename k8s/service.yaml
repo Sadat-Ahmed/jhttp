@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jhttp-service
+  namespace: harness-demo
+spec:
+  type: ClusterIP
+  selector:
+    app: jhttp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jhttp
+  namespace: harness-demo
+  labels:
+    app: jhttp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jhttp
+  template:
+    metadata:
+      labels:
+        app: jhttp
+    spec:
+      containers:
+        - name: jhttp
+          image: sadatahmed93/jhttp:6
+          ports:
+            - containerPort: 8888
