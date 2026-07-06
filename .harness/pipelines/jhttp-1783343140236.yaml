@@ -28,37 +28,27 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Run_1
-                  identifier: Run_1
+                  name: Build Java App
+                  identifier: Build_Java_App
                   spec:
+                    connectorRef: dockerhub_connector
+                    image: maven:3.8-jdk-11
                     shell: Sh
-                    command: |-
-                      - step:
-                          type: Run
-                          name: Build Java App
-                          identifier: Build_Java_App
-                          spec:
-                            connectorRef: dockerhub_connector
-                            image: maven:3.8-jdk-11
-                            shell: Sh
-                            command: |-
-                              mvn clean package dependency:copy-dependencies
-
-                      - step:
-                          type: Run
-                          name: Run Unit Tests
-                          identifier: Run_Unit_Tests
-                          spec:
-                            connectorRef: dockerhub_connector
-                            image: maven:3.8-jdk-11
-                            shell: Sh
-                            command: |-
-                              mvn test
-                            reports:
-                              type: JUnit
-                              spec:
-                                paths:
-                                  - target/surefire-reports/*.xml
+                    command: mvn clean package dependency:copy-dependencies
+              - step:
+                  type: Run
+                  name: Run Unit Tests
+                  identifier: Run_Unit_Tests
+                  spec:
+                    connectorRef: dockerhub_connector
+                    image: maven:3.8-jdk-11
+                    shell: Sh
+                    command: mvn test
+                    reports:
+                      type: JUnit
+                      spec:
+                        paths:
+                          - target/surefire-reports/*.xml
               - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
