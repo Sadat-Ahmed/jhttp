@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_Sadat_Ahmed_jhttp_1783343154869-pr-trigger-input-set
+  identifier: Build_Sadat_Ahmed_jhttp_1783343154869prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_Sadat_Ahmed_jhttp_1783343154869
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
