@@ -106,6 +106,20 @@ pipeline:
                         timeout: 10m
                         spec:
                           skipDryRun: false
+              - stepGroup:
+                  name: K8s validator
+                  identifier: K8s_validator
+                  steps:
+                    - step:
+                        name: test k8 validate
+                        identifier: test_k8_validate
+                        template:
+                          templateRef: K8s_rollout_validater
+                          versionLabel: v1
+                  stepGroupInfra:
+                    type: KubernetesDirect
+                    spec:
+                      connectorRef: dockerdesktopk8s
             rollbackSteps:
               - step:
                   name: Canary Delete
